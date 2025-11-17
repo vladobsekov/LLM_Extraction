@@ -1,5 +1,5 @@
 import os
-from my_project.pydantic_models import EchoReport  # assuming this is defined in your Pydantic module
+from my_project.pydantic_models import EchoReport 
 
 # Dictionary of experimental configurations for testing
 experiments_dic = {
