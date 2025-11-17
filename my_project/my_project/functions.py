@@ -12,6 +12,7 @@ import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill
 from pydantic import BaseModel
+import dotenv
 
 from dotenv import load_dotenv
 from pathlib import Path
