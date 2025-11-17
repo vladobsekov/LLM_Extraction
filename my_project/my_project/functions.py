@@ -12,12 +12,8 @@ import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill
 from pydantic import BaseModel
-import dotenv
 
-from dotenv import load_dotenv
 from pathlib import Path
-
-load_dotenv()
 
 ##############################
 ###    Helper Functions   ####
@@ -38,8 +34,6 @@ def ensure_azure_env_vars():
             with open(".env", "a", encoding="utf-8") as f:
                 f.write(f"{var}={val}\n")
             updated = True
-    if updated:
-        load_dotenv()
 
 
 def check_environment_keys(env_keys: List[str]) -> None:
