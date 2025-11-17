@@ -13,11 +13,6 @@ from openpyxl import load_workbook
 from openpyxl.styles import PatternFill
 from pydantic import BaseModel
 
-from langchain_core.prompts import PromptTemplate
-from langchain_openai import ChatOpenAI, AzureChatOpenAI
-from langchain_community.callbacks.manager import get_openai_callback
-from langchain.output_parsers import PydanticOutputParser, OutputFixingParser
-from langchain_core.messages import AIMessage
 from dotenv import load_dotenv
 from pathlib import Path
 
