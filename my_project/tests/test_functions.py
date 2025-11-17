@@ -1,0 +1,9 @@
+import pytest
+
+from my_project.functions import example_function
+
+
+
+def test_example_function():
+
+    assert example_function(2) == 4
