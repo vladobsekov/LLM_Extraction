@@ -1,32 +1,56 @@
+###########################
+### Importing libraries ###
+###########################
+%pip install langchain langchain_core langchain_openai langchain_community pandas openpyxl python-docx python-dotenv PyPDF2 nest_asyncio
 
+# system
 import asyncio
 from asyncio import CancelledError
 import os
 import time
 import platform
 import subprocess
-from typing import List, Any, Literal, Optional
+from typing import List, Dict, Any, Literal, Union, Optional
+import getpass
+
+# Langchain and LLM
 import re
 import json
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill
-from pydantic import BaseModel
 
+from pydantic import BaseModel, Field
+
+from langchain_core.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain_openai import AzureChatOpenAI
+from langchain_community.callbacks.manager import get_openai_callback
+from langchain.output_parsers import PydanticOutputParser, OutputFixingParser
+from langchain_core.messages import AIMessage
+
+from dotenv import load_dotenv
 from pathlib import Path
+
+load_dotenv()
 
 ##############################
 ###    Helper Functions   ####
 ##############################
 
-
 def ensure_azure_env_vars():
+    """
+    Ensures that the environment variables for Azure OpenAI 
+    are set. If not, prompts the user for values and saves 
+    them to the local .env file.
+    """
     azure_vars = {
         "AZURE_OPENAI_API_KEY": "Please provide the Azure OpenAI API Key: ",
         "AZURE_OPENAI_ENDPOINT": "Please provide the Azure OpenAI Endpoint: ",
         "AZURE_API_VERSION": "Please provide the Azure OpenAI API Version: "
     }
     updated = False
+    
     for var, prompt_msg in azure_vars.items():
         if not os.getenv(var):
             val = input(prompt_msg)
@@ -35,20 +59,32 @@ def ensure_azure_env_vars():
                 f.write(f"{var}={val}\n")
             updated = True
 
+    # Reload .env if new variables were added
+    if updated:
+        load_dotenv()
+
 
 def check_environment_keys(env_keys: List[str]) -> None:
+    """
+    Check if the required keys are provided 
+    (non-empty strings after we've ensured environment variables).
+    """
     missing_keys = [key for key in env_keys if not key]
     if missing_keys:
         raise ValueError(f"Missing API keys or endpoints: {', '.join(missing_keys)}")
 
 
 def extract_json(message: AIMessage) -> Any:
+    """Extracts JSON content from a string where JSON is 
+       embedded between ```json and ``` tags.
+    """
     text = message.content
     print(f"THE ERROR IS CAUSED BY: {text}.")
     pattern = r"```json(.*?)```"
     matches = re.findall(pattern, text, re.DOTALL)
     if not matches:
         raise ValueError("No JSON block found in the message.")
+
     try:
         return json.loads(matches[0].strip())
     except json.JSONDecodeError as e:
@@ -70,11 +106,19 @@ async def async_openai_pydantic_extractor(
     openai_api_key=os.getenv("SIAVOSH_OPENAI_API_KEY"),
 ) -> tuple:
     """
-    Async extraction using OpenAI + Pydantic
+    Asynchronous function for extracting information from 
+    a text using OpenAI and Pydantic.
     """
+    # Make sure the environment variable for OpenAI is set
     check_environment_keys([openai_api_key])
-    llm = ChatOpenAI(api_key=openai_api_key, model=model, temperature=temperature,
-                     max_retries=max_retries, max_tokens=max_tokens)
+    
+    llm = ChatOpenAI(
+        api_key=openai_api_key,
+        model=model,
+        temperature=temperature,
+        max_retries=max_retries,
+        max_tokens=max_tokens,
+    )
 
     if parser_error_handling == "include_raw":
         parser = PydanticOutputParser(pydantic_object=PydanticClass, include_raw=True)
@@ -122,7 +166,6 @@ async def async_openai_pydantic_extractor(
 
     print(f"STATUS of {PydanticClass.__name__}: {status}")
     return PydanticClass.__name__, status, response, experiment_info
-
 
 
 #######################################
