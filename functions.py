@@ -125,8 +125,8 @@ class EchoReport(BaseModel):
     """Main Pydantic model capturing the full echo report."""
 
     # Additional structural/surgical/device data
-    surgical_history: Optional[SurgicalHistory] = None
     diagnoses: Optional[DiagnosisHistory] = None
+    surgical_history: Optional[SurgicalHistory] = None
 
     class Config:
         # If you prefer enum field values as strings in the JSON output:
