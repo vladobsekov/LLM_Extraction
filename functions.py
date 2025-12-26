@@ -15,14 +15,6 @@ class SelectedCode(BaseModel):
         None,
         description="Selected ontology concept name/label (may be null if model returned null)."
     )
-    rank: Optional[int] = Field(
-        None,
-        description="Rank of the selected item among candidates (if available)."
-    )
-    status: Optional[str] = Field(
-        None,
-        description="Status of selection (e.g., ok, model_returned_null, error)."
-    )
 
 class DiagnosisItem(BaseModel):
     """Individual diagnosis entry with date and status."""
@@ -37,14 +29,6 @@ class DiagnosisItem(BaseModel):
     status: Optional[str] = Field(
         None,
         description="Current status of the diagnosis (e.g., active, resolved, post-repair, stable, progressive)."
-    )
-    source_text: Optional[str] = Field(
-        None,
-        description="Exact line or snippet of text from which the diagnosis was extracted. Provide the text from which it was extracted in a deidentified manner (e.g., do not include name, DOB, address)."
-    )
-    explainability: Optional[str] = Field(
-        None,
-        description="Brief explanation of how or why this diagnosis was identified from the text."
     )
     SNOMEDdx_SELECTED: Optional[SelectedCode] = Field(
         None,
@@ -69,14 +53,6 @@ class SurgicalIntervention(BaseModel):
     date_of_procedure: Optional[str] = Field(
         None,
         description="Approximate or known date of the procedure (format: YYYY-MM or YYYY-MM-DD)."
-    )
-    source_reference: Optional[str] = Field(
-        None,
-        description="Exact line of text or section from which this information was extracted. Provide the text from which it was extracted in a deidentified manner (e.g., do not include name, DOB, address)"
-    )
-    explainability: Optional[str] = Field(
-        None,
-        description="Brief explanation of how or why this procedure was identified from the text."
     )
     SNOMEDproc_SELECTED: Optional[SelectedCode] = Field(
         None,
