@@ -92,18 +92,6 @@ class SurgicalHistory(BaseModel):
         None, 
         description="Details of previous surgeries or repairs. Include the date of the surgery, procedure, or repair for each one if present. Do not include noncardiac procedures. Ensure that you extract one diagnosis at a time and only those that are explicitly identified (ie. subaortic membrane resection and valve repair should be 2 separate procedures)."
     )
-    EP_devices: Optional[list] = Field(
-        None,
-        description="List any and all electrophysiology devices currently implanted (pacemaker, ICD, leadless pacemaker, epicardial pacemaker)"
-    )
-    VAD_devices: Optional[list] = Field(
-        None,
-        description="List any and all advanced heart failure devices currently implanted (ECMO, Heartmate, Berlin VAD, Impella, Balloon pump)"
-    )
-    Mass: Optional[str] = Field(
-        None,
-        description="List any and all masses present (lipoma, vegetation, cyst, tumor, abscess)"
-    )
 
 
 class DiagnosisHistory(BaseModel):
@@ -111,10 +99,6 @@ class DiagnosisHistory(BaseModel):
     cardiac_diagnoses: Optional[List[DiagnosisItem]] = Field(
         None,
         description="List of prior and current cardiac diagnoses with their respective dates, status, and source references. Do not include noncardiac diagnoses, such as genetic conditions."
-    )
-    genetic_or_metabolic_disorders: Optional[List[DiagnosisItem]] = Field(
-        None,
-        description="List of known genetic, metabolic, or systemic disorders associated with cardiac disease, including date, status, and source reference (e.g., Trisomy 21, Fabry disease)."
     )
    
 #
